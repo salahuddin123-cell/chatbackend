@@ -144,7 +144,7 @@ router.post("/login",async(req,res)=>{
 let isMatch=bcrypt.compare(Password,user.Password)
   
 
-if(isMatch){
+if(user &&isMatch){
 
   let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
 
