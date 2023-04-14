@@ -156,8 +156,7 @@ router.post("/login",async(req,res)=>{
         maxAge: 606 * 24 * 30
     })
     res.status(200).json({
-        token,
-        data: user
+        user
     })
 
 
