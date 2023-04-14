@@ -135,32 +135,29 @@ router.get("/chat/all",function (req,res,next){
   
 })
 router.post("/login",async(req,res)=>{
-  const { Email, Password } = req.body
-    const user = await RegisterSchema.findOne({ email: req.body.email });
+  const {Email,Password}=req.body
+  const user=await RegisterSchema.findOne({Email:req.body.Email});
+ 
+  if(!user){
+   return  res.status(400).json({"success":"false"})
+}
+let isMatch=bcrypt.compare(Password,user.Password)
+  console.log(isMatch)
 
-    if (!user) {
-        return res.status(400).json({ "success": "false" })
-    }
-    let isMatch = bcrypt.compare(Password, user.Password)
-
-
-    if (!isMatch) {
-        return res.status(403).json({ "responce": "password does not match" })
-    }
-
-
-
-    let token = jwt.sign({ "id": user._id }, 'mynameissalahuddinsksk', { noTimestamp: true, expiresIn: '5m' });
-
-    res.cookie("JWT", token, {
-        maxAge: 606 * 24 * 30
-    })
-    res.status(200).json({
-        user
-    })
+if(isMatch){
+  
+ return res.status(403).json({"responce":"password does not match"})
+}
 
 
 
+let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
 
+res.cookie("JWT",token,{
+maxAge:606*24*30
+})
+res.status(200).json({
+token
+})
 
 })
