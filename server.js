@@ -17,10 +17,8 @@ app.use(cors());
 
 const server = http.createServer(app);
 mongoose.Promise=global.Promise ;
-mongoose.connect(BD_CONNECTION,  (err) => {
-  if(err) console.log(err) 
-  else console.log("mongdb is connected");
- })
+mongoose.Promise = global.Promise;
+mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
 const io = new Server(server,{
     cors:{
         origin: "http://localhost:3000",
@@ -31,7 +29,7 @@ const io = new Server(server,{
 }
     
     );
-    
+
 
     app.use('/',router);
 
