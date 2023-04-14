@@ -110,7 +110,7 @@ router.get("/chat/all",function (req,res,next){
               delete e.Password
               users.push(e)
             });
-          res.status(200).json(users);
+          res.json(users);
         
           }
       });
