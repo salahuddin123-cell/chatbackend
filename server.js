@@ -21,7 +21,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
 const io = new Server(server,{
     cors:{
-        origin: ["http://localhost:3000","https://massagebox.netlify.app/"],
+        origin: ["http://localhost:3000","https://massagebox.netlify.app"],
         optionsSuccessStatus: 200,
         credentials: true, 
         methods: ["GET", "POST"],
