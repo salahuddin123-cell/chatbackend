@@ -124,7 +124,7 @@ router.get("/chat/all",function (req,res,next){
 
       RegisterSchema.create(req.body, (error, data) => {
           if (error) {
-            console.log(error)
+            res.status(400).json({"error":error});
               return 
           } else {
               
