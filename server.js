@@ -144,19 +144,22 @@ router.post("/login",async(req,res)=>{
 let isMatch=bcrypt.compare(Password,user.Password)
   
 
-if(!isMatch){
- return res.status(403).json({"responce":"password does not match"})
+if(isMatch){
+
+  let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
+
+  res.cookie("JWT",token,{
+  maxAge:606*24*30
+  })
+  res.status(200).json({
+  token
+  })
+}else{
+  return res.status(403).json({"responce":"password does not match"})
 }
 
 
 
-let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
 
-res.cookie("JWT",token,{
-maxAge:606*24*30
-})
-res.status(200).json({
-token
-})
 
 })
