@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       max: 50,
-      uniqe:true
+      unique:true
      
     },
     time:{

@@ -142,9 +142,9 @@ router.post("/login",async(req,res)=>{
    return  res.status(400).json({"success":"false"})
 }
 let isMatch=bcrypt.compare(Password,user.Password)
-  console.log(isMatch)
 
-if(isMatch){
+
+if(!isMatch){
   
  return res.status(403).json({"responce":"password does not match"})
 }
