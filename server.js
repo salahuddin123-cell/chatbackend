@@ -136,28 +136,43 @@ router.get("/chat/all",function (req,res,next){
 })
 router.post("/login",async(req,res)=>{
   const {Email,Password}=req.body
-  const user=await RegisterSchema.findOne({Email:req.body.Email});
  
-  if(!user){
-   return  res.status(400).json({"success":"false"})
-}
-let isMatch=bcrypt.compare(Password,user.Password)
+  RegisterSchema.findOne({ Email })
+  .then(user => {
+      //if user not exist than return status 400
+      if (!user) return res.status(400).json({ msg: "User not exist" })
+
+      //if user exist than compare password
+      //password comes from the user
+      //user.password comes from the database
+      bcrypt.compare(Password, user.Password, (err, data) => {
+          //if error than throw error
+          if (err) {
+            return res.status(404).json({ error: err })
+          }
 
 
-if(!isMatch){
-  
- return res.status(403).json({"responce":"password does not match"})
-}
+          //if both match than you can do anything
+          if (data) {
+            let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
+
+            res.cookie("JWT",token,{
+            maxAge:606*24*30
+            })
+            res.status(200).json({
+            token
+            })
+          } else {
+              return res.status(403).json({ msg: "Invalid credencial" })
+          }
+
+      })
+
+  })
+ 
 
 
 
-let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
 
-res.cookie("JWT",token,{
-maxAge:606*24*30
-})
-res.status(200).json({
-token
-})
 
 })
