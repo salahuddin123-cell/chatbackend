@@ -18,7 +18,13 @@ app.use(cors());
 const server = http.createServer(app);
 mongoose.Promise=global.Promise ;
 mongoose.Promise = global.Promise;
-mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
+mongoose.connect(BD_CONNECTION,{
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true, //make this true
+  autoIndex: true, //make this also true
+}, () => console.log("database connected"))
+ 
 const io = new Server(server,{
     cors:{
         origin: ["http://localhost:3000","https://massagebox.netlify.app"],
