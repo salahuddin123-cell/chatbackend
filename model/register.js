@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema(
     time:{
       type:Date,
     },
+  
     Password: {
       type: String,
      
@@ -29,6 +30,9 @@ const UserSchema = new mongoose.Schema(
     
       min: 6,
     }, 
+    image:{
+      type:String
+    }
   },
   { timestamps: true }
 );
