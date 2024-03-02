@@ -10,14 +10,16 @@ const bcrypt = require('bcryptjs')
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
 var bodyParser = require('body-parser');
-app.use(express.json())
+
 const router=express.Router();
 const BD_CONNECTION="mongodb+srv://salahuddinsk933:XP0sOaD5wcBmN04D@chat.mhzjmi9.mongodb.net/?retryWrites=true&w=majority"
 var cookies = require("cookie-parser");
 
 app.use(cookies());
-app.use(express.json())
+
 app.use(cors());
+app.use(express.json({limit: '25mb'}));
+app.use(express.urlencoded({limit: '25mb', extended: true}));
 
 const server = http.createServer(app);
 mongoose.Promise=global.Promise ;
@@ -139,7 +141,7 @@ router.get("/chat/all",function (req,res,next){
              token
               })
       } catch (error) {
-        console.log(error+"itis")
+        res.status(403).json({error})
       }
      
           
