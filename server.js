@@ -9,16 +9,22 @@ const RegisterSchema=require('./model/register')
 const bcrypt = require('bcryptjs')
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+var bodyParser = require('body-parser');
 app.use(express.json())
 const router=express.Router();
 const BD_CONNECTION="mongodb+srv://salahuddinsk933:XP0sOaD5wcBmN04D@chat.mhzjmi9.mongodb.net/?retryWrites=true&w=majority"
+var cookies = require("cookie-parser");
 
+app.use(cookies());
+app.use(express.json())
 app.use(cors());
 
 const server = http.createServer(app);
 mongoose.Promise=global.Promise ;
 mongoose.Promise = global.Promise;
 mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
+
+
 const io = new Server(server,{
     cors:{
         origin: ["http://localhost:3000","https://massagebox.netlify.app"],
@@ -76,7 +82,7 @@ const io = new Server(server,{
       socket.on('disconnect', () => {
         removeUser(socket.id)
         io.to(room).emit('member',{users2})
-        socket.broadcast.emit('leave', { user: 'Admin', message: `${users[socket.id]} has left` })
+        socket.broadcast.emit('leave', users[socket.id])
        
     })
 });  
@@ -99,6 +105,7 @@ router.get("/chat/all",function (req,res,next){
     });
 
     router.get("/user/all",function (req,res,next){
+  
  
       RegisterSchema.find((error, data) => {
           if (error) {
@@ -116,28 +123,54 @@ router.get("/chat/all",function (req,res,next){
       });
       });
 
-    router.post('/register/new', (req, res) => {
-
-      let password=req.body.Password
-      let data=req.body;
-      data.Password=bcrypt.hashSync(password, 8),
-
-      RegisterSchema.create(req.body, (error, data) => {
-          if (error) {
-            res.status(400).json({"error":error});
-              return 
-          } else {
-              
-              res.status(200).json(data);
-          }
+    router.post('/register/new', async(req, res) => {
+      try {
+        let password=req.body.Password
+        let data=req.body;
+        data.Password=bcrypt.hashSync(password, 8);
+        let user= await RegisterSchema.create(data);
+        let token = jwt.sign( {user:user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
+        res.cookie("token",token,{
+                withCredentials: true,
+                httpOnly: false,
+                maxAge:5*60*1000
+            })
+              res.status(201).json({
+              success:true,
+              message:'registered successfully'
+              })
+      } catch (error) {
+        console.log(error)
+      }
+     
+          
       });
 
   
+
+router.post('/user/lsupdate', (req, res) => {
+
+  let Name=req.body.data
+ 
+
+ 
+  RegisterSchema.updateOne({Name:Name},{$set:{Lastseen:new Date().getTime()}}, (error, data) => {
+      if (error) {
+        res.status(400).json({"error":error});
+          return 
+      } else {
+          
+          res.status(200).json(data);
+      }
+  });
+
+
 })
+
 router.post("/login",async(req,res)=>{
   const {Email,Password}=req.body
  
-  RegisterSchema.findOne({ Email })
+  await RegisterSchema.findOne({ Email })
   .then(user => {
       //if user not exist than return status 400
       if (!user) return res.status(400).json({ msg: "User not exist" })
@@ -154,11 +187,13 @@ router.post("/login",async(req,res)=>{
 
           //if both match than you can do anything
           if (data) {
-            let token = jwt.sign( {"user":user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
+            let token = jwt.sign( {user:user},'mynameissalahuddinsksk',  { noTimestamp:true, expiresIn: '5m' });
 
-            res.cookie("JWT",token,{
-            maxAge:606*24*30
-            })
+            res.cookie("token", token, {
+              withCredentials: true,
+                  httpOnly: false,
+                  maxAge:5*60*1000
+             })
             res.status(200).json({
             token
             })

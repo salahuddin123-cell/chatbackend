@@ -32,6 +32,9 @@ const UserSchema = new mongoose.Schema(
     }, 
     image:{
       type:String
+    },
+    Lastseen:{
+      type:Date
     }
   },
   { timestamps: true }
