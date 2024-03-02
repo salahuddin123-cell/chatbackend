@@ -136,11 +136,10 @@ router.get("/chat/all",function (req,res,next){
                 maxAge:5*60*1000
             })
               res.status(201).json({
-              success:true,
-              message:'registered successfully'
+             token
               })
       } catch (error) {
-        console.log(error)
+        console.log(error+"itis")
       }
      
           
