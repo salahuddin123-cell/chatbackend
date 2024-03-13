@@ -29,7 +29,7 @@ mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
 
 const io = new Server(server,{
     cors:{
-        origin: ["http://localhost:3000","https://massagebox.netlify.app"],
+        origin: ["http://localhost:3000","https://massagebox.netlify.app","http://192.168.0.102:3000"],
         optionsSuccessStatus: 200,
         credentials: true, 
         methods: ["GET", "POST"],
@@ -86,6 +86,14 @@ const io = new Server(server,{
         io.to(room).emit('member',{users2})
         socket.broadcast.emit('leave', users[socket.id])
        
+    })
+    socket.emit("me", socket.id)
+    socket.on("callUser", (data) => {
+      io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+    })
+  
+    socket.on("answerCall", (data) => {
+      io.to(data.to).emit("callAccepted", data.signal)
     })
 });  
 
