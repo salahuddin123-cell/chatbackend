@@ -95,6 +95,9 @@ const io = new Server(server,{
     socket.on("answerCall", (data) => {
       io.to(data.to).emit("callAccepted", data.signal)
     })
+    socket.on("callended", (data) => {
+      io.to(data.to).emit("callended", data)
+    })
 });  
 
 server.listen(process.env.PORT||4001, () => {
