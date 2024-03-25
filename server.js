@@ -111,7 +111,8 @@ router.get("/chat/all",function (req,res,next){
         if (error) {
         return next(error);
         } else {
-        res.json(data);
+        var chats=data.find(e=>e.me==req.body.room)
+        res.json(chats);
       
         }
     });
@@ -119,7 +120,7 @@ router.get("/chat/all",function (req,res,next){
 
     router.get("/user/all",function (req,res,next){
   
- 
+      
       RegisterSchema.find((error, data) => {
           if (error) {
             console.log(error)
@@ -127,8 +128,7 @@ router.get("/chat/all",function (req,res,next){
           } else {
             let users=[]
             data.forEach(e => {
-              delete e.Password
-              users.push(e)
+             users.push({Name:e.Name,Email:e.Email,Occupation:e.Occupation,image:e.image,Lastseen:e.Lastseen})
             });
           res.json(users);
         
