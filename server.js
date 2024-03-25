@@ -107,12 +107,12 @@ server.listen(process.env.PORT||4001, () => {
 
 router.post("/chat/all",function (req,res,next){
  
-    chatSchema.find((error, data) => {
+    chatSchema.find({me:req.body.room},(error, data) => {
         if (error) {
         return next(error);
         } else {
-        var chats=data.find(e=>e.me==req.body.room)
-        res.json(chats);
+        
+        res.json(data);
       
         }
     });
