@@ -128,7 +128,7 @@ router.get("/chat/all",function (req,res,next){
           } else {
             let users=[]
             data.forEach(e => {
-             users.push({Name:e.Name,Email:e.Email,Occupation:e.Occupation,image:e.image,Lastseen:e.Lastseen})
+             users.push({_id:e._id,Name:e.Name,Email:e.Email,Occupation:e.Occupation,image:e.image,Lastseen:e.Lastseen})
             });
           res.json(users);
         
