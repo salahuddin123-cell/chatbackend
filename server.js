@@ -105,7 +105,7 @@ server.listen(process.env.PORT||4001, () => {
 });
 
 
-router.get("/chat/all",function (req,res,next){
+router.post("/chat/all",function (req,res,next){
  
     chatSchema.find((error, data) => {
         if (error) {
