@@ -37,7 +37,18 @@ const io = new Server(server,{
 }
     
     );
-
+    const isAuthenticated=async(req,res,next)=>{
+      const token=req.cookies.token;
+    
+    
+      if(!token){
+        return res.status(404).json({success:false,message:"Please login"})
+      }
+      const decoded=jwt.verify(token,"mynameissalahuddinsksk")
+    
+      req.user=await RegisterSchema.findById(decoded._Id)
+      next()
+  }
 
     app.use('/',router);
 
@@ -111,17 +122,17 @@ router.post("/chat/all",function (req,res,next){
         if (error) {
         return next(error);
         } else {
-        
+          
         res.json(data);
       
         }
     });
     });
 
-    router.get("/user/all",function (req,res,next){
+    router.get("/user/all",isAuthenticated,function (req,res,next){
   
       
-      RegisterSchema.find((error, data) => {
+      RegisterSchema.find((error, data) => {  
           if (error) {
             console.log(error)
           return ;
