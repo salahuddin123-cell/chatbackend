@@ -46,7 +46,7 @@ const io = new Server(server,{
       }
       const decoded=jwt.verify(token,"mynameissalahuddinsksk")
     
-      req.user=await RegisterSchema.findById(decoded._Id)
+      req.user=await RegisterSchema.findById(decoded._id)
       next()
   }
 
