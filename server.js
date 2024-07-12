@@ -22,9 +22,19 @@ app.use(express.json());
 app.use(express.urlencoded({limit: '25mb', extended: true}));
 
 const server = http.createServer(app);
-mongoose.Promise=global.Promise ;
 mongoose.Promise = global.Promise;
-mongoose.connect(BD_CONNECTION, () => console.log("database connected"))
+const connectToMongo = async () => {
+    try {
+        mongoose.set('strictQuery', false)
+        mongoose.connect(BD_CONNECTION) 
+        console.log('database connected')
+    }
+    catch(error) {
+        console.log(error)
+        process.exit()
+    }
+    }
+connectToMongo()
 
 
 const io = new Server(server,{
