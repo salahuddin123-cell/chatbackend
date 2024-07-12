@@ -139,7 +139,7 @@ router.post("/chat/all",function (req,res,next){
     });
     });
 
-    router.get("/user/all",isAuthenticated,function (req,res,next){
+    router.get("/user/all",function (req,res,next){
   
       
       RegisterSchema.find((error, data) => {  
