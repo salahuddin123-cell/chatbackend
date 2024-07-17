@@ -26,6 +26,9 @@ const UserSchema = new mongoose.Schema(
      
       min: 6,
     },
+    groupname:{
+      type:String
+    },
     Occupation: {
       type: String,
     

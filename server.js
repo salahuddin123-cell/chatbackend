@@ -6,6 +6,7 @@ const Db=require('./database/db');
 const mongoose=require('mongoose');
 const chatSchema=require('./model/chat')
 const RegisterSchema=require('./model/register')
+const Groupschema=require('./model/group')
 const bcrypt = require('bcryptjs')
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
@@ -95,11 +96,11 @@ const io = new Server(server,{
             io.emit('member',{users2})
         })
      
-        socket.on("message", ({ msg, id ,me,time,reciever}) => {
+        socket.on("message", ({ msg, id ,me,image,time,reciever}) => {
           console.log(me,id,msg)
-          io.to(me).emit('sendMessage', { user: users[id], message: msg, id: id ,time,me})
-          io.emit('notify',{ user: users[id], message: msg, id: id ,time,me,reciever})
-          const msgs=  new chatSchema({user:users[socket.id],message:msg,id:id,me,time})
+          io.to(me).emit('sendMessage', { user: users[id],image:image, message: msg, id: id ,time,me})
+          io.emit('notify',{ user: users[id], message: msg,image:image, id: id ,time,me,reciever})
+          const msgs=  new chatSchema({user:users[socket.id],message:msg,image:image,id:id,me,time})
           msgs.save()
       })
       socket.on('disconnect', () => {
@@ -178,8 +179,71 @@ router.post("/chat/all",function (req,res,next){
      
           
       });
+router.post('/userupdate/:id',async(req,res)=>{
+  try {
+   res=await RegisterSchema.findByIdAndUpdate({_id:req.params.id},{Name:req.body.Name,Occupation:req.body.status})
+    .then(data=>{res.status(201).json(data),console.log(data)})
+    console.log(res)
+  } catch (error) {
+    console.log(error)
+  }
+})
+router.post('/deleteuser/:id',async(req,res)=>{
+  try {
+   await RegisterSchema.findByIdAndDelete(req.params.id)
+    .then(data=>{res.status(201).json({success:true,message:"deleted"})})
+    
+  } catch (error) {
+    console.log(error)
+  }
+})
 
+router.post('/creategroup',async(req,res)=>{
+  try {
+    await Groupschema.create(req.body)
+    .then(data=>res.status(201).json(data))
+  } catch (error) {
+    console.log(error)
+  }
+})  
+router.post('/getgroup',async(req,res)=>{
+  let userid=req.body._id
   
+  try {
+    let grp= await Groupschema.find()
+
+    let g=grp.filter(e=>{
+      if((e.ids).includes(userid)){
+        return e
+      }
+    })
+    
+    res.status(200).json(g)
+  } catch (error) {
+    console.log(error)
+  }
+})
+router.post('/groupupdate',async(req,res)=>{
+try {
+  await Groupschema.updateOne({Name:req.body.Name},{$set:{users:req.body.users,ids:req.body.ids}})
+  .then(data=>res.status(201).json(data))
+} catch (error) {
+  console.log(error)
+}
+})
+// router.post('/leavegroup',async(req,res)=>{
+//   let gname=req.body.gname;
+//   let id=req.body.id
+//   let Name=req.body.Name
+//   let new_users=(req.body.users).filter(e=>e!=Name)
+//   let newids=(req.body.ids).filter(e=>e!=id)
+//   try {
+//     await Groupschema.updateOne({Name:gname},{$set:{users:new_users,ids:newids}})
+//     .then(data=>res.status(201).json(data))
+//   } catch (error) {
+//     console.log(error)
+//   }
+//   })
 
 router.post('/user/lsupdate', (req, res) => {
 

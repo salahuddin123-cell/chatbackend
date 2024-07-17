@@ -18,7 +18,10 @@ time:{
   },
 message: {
 	type: String
-}
+},
+image:{
+type:String
+},
 }, {
 	collection: 'chat2'
 })
