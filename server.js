@@ -18,7 +18,7 @@ var cookies = require("cookie-parser");
 
 app.use(cookies());
 
-app.use(cors());
+app.use(cors({credentials: true, origin: ['http://localhost:3000','https://massagebox.netlify.app']}));
 app.use(express.json());
 app.use(express.urlencoded({limit: '25mb', extended: true}));
 
