@@ -18,7 +18,7 @@ var cookies = require("cookie-parser");
 
 app.use(cookies());
 
-app.use(cors({credentials: true, origin: ['http://localhost:3000','https://massagebox.netlify.app']}));
+app.use(cors({credentials: true, origin: ['http://localhost:3000','http://localhost:3000','https://massagebox.netlify.app']}));
 app.use(express.json());
 app.use(express.urlencoded({limit: '25mb', extended: true}));
 
@@ -112,6 +112,7 @@ const io = new Server(server,{
     socket.emit("me", socket.id)
     socket.on("callUser", (data) => {
       io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+      console.log(data)
     })
   
     socket.on("answerCall", (data) => {
